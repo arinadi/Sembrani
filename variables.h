@@ -1,5 +1,7 @@
 //Deep Sleep
-int STAY_ALIVE_STATE = 0;
+const int KEEP_ALIVE_TIMER = 15 * (1000 * 60); // minutes
+unsigned long KEEP_ALIVE_TIMENOW = 0;
+unsigned long KEEP_ALIVE_LASTACTION = millis();
 
 
 //Default BT
@@ -17,14 +19,14 @@ int STAY_ALIVE_STATE = 0;
 #define RF_D2_PIN 26 // Input C
 #define RF_D3_PIN 25 // Input D
 
-int RF_VT_STATE = 0;
-int RF_D0_STATE = 0;
-int RF_D1_STATE = 0;
-int RF_D2_STATE = 0;
-int RF_D3_STATE = 0;
+bool RF_VT_STATE = 0;
+bool RF_D0_STATE = 0;
+bool RF_D1_STATE = 0;
+bool RF_D2_STATE = 0;
+bool RF_D3_STATE = 0;
 
-int RF_CLICK = 0;
-String RF_CLICK_TYPE = "";
+short int RF_CLICK = 0;
+short int RF_CLICK_TYPE = 0;
 const int RF_CLICK_TIMER = 1000; // ms
 unsigned long RF_CLICK_TIMESTART = 0;
 unsigned long RF_CLICK_TIMELIMIT = 0;

@@ -21,7 +21,7 @@ void setup() {
 
   // Deep Sleep
   //Print the wakeup reason for ESP32
-  print_wakeup_reason();
+  printWakeupReason();
   //Configure GPIO12 as ext0 wake up source for HIGH logic level
   esp_sleep_enable_ext0_wakeup(GPIO_NUM_12, 1);
 
@@ -29,7 +29,7 @@ void setup() {
   initBT();
 
   initBuzzer();
-  feedbackTone(250, NOTE_G3);
+  feedbackTone(100, NOTE_G3);
 }
 
 void loop() {
@@ -37,10 +37,12 @@ void loop() {
   inputCheckBT();
 
   if (RF_CLICK > 0 && millis() > RF_CLICK_TIMELIMIT) {
+    unsigned long KEEP_ALIVE_LASTACTION = millis();
     // GO ACTION
     inputActionRF(RF_CLICK_TYPE, RF_CLICK);
 
     // RESET INPUT
     inputResetRF();
   }
+  KeepAlive();
 }

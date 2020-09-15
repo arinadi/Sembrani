@@ -4,7 +4,7 @@ void startDeepSleep() {
   esp_deep_sleep_start();
 }
 
-void print_wakeup_reason() {
+void printWakeupReason() {
   esp_sleep_wakeup_cause_t wakeup_reason;
   wakeup_reason = esp_sleep_get_wakeup_cause();
   switch (wakeup_reason)
@@ -15,6 +15,13 @@ void print_wakeup_reason() {
     case 4  : Serial.println("Wakeup caused by touchpad"); break;
     case 5  : Serial.println("Wakeup caused by ULP program"); break;
     default : Serial.println("Wakeup was not caused by deep sleep"); break;
+  }
+}
+
+void KeepAlive() {
+  unsigned long KEEP_ALIVE_TIMENOW = millis(); // grab current time
+  if ((unsigned long)(KEEP_ALIVE_TIMENOW - KEEP_ALIVE_LASTACTION) >= KEEP_ALIVE_TIMER) {
+    startDeepSleep();
   }
 }
 
@@ -75,16 +82,22 @@ void feedbackTone(int duration, int note = NOTE_C7) {
 
 
 // RF Remote
+// Interrupts
+void IRAM_ATTR isr() {
+  RF_VT_STATE = 1;
+}
 void initRF() {
   pinMode(RF_VT_PIN, INPUT);
+  attachInterrupt(RF_VT_PIN, isr, RISING); //Interrupts
+
   pinMode(RF_D0_PIN, INPUT);
   pinMode(RF_D1_PIN, INPUT);
   pinMode(RF_D2_PIN, INPUT);
   pinMode(RF_D3_PIN, INPUT);
 }
 
-void inputRegulatorRF(String type, int fbTone = NOTE_A6) {
-  if (RF_CLICK == 0 && RF_CLICK_TYPE == "") { // Single click
+void inputRegulatorRF(int type, int fbTone = NOTE_A6) {
+  if (RF_CLICK == 0 && RF_CLICK_TYPE == 0) { // Single click
     RF_CLICK_TIMESTART = millis();
     RF_CLICK_TIMELIMIT = RF_CLICK_TIMESTART + RF_CLICK_TIMER;
     RF_CLICK = 1;
@@ -107,12 +120,12 @@ void inputRegulatorRF(String type, int fbTone = NOTE_A6) {
   Serial.println(RF_CLICK);
 }
 
-void inputActionRF(String type, int action = 1) {
+void inputActionRF(int type, int action = 1) {
   Serial.print("inputActionRF type : ");
   Serial.println(type);
   Serial.print("inputActionRF action : ");
   Serial.println(action);
-  if (type == "RF_D0") {
+  if (type == 1) {
     if (action == 1) {
       feedbackTone(300, NOTE_B4);
     }
@@ -126,7 +139,7 @@ void inputActionRF(String type, int action = 1) {
       feedbackTone(500, NOTE_B6);
     }
   }
-  if (type == "RF_D1") {
+  if (type == 2) {
     if (action == 1) {
       feedbackTone(300, NOTE_C8);
     }
@@ -140,7 +153,7 @@ void inputActionRF(String type, int action = 1) {
       feedbackTone(500, NOTE_C6);
     }
   }
-  if (type == "RF_D2") {
+  if (type == 3) {
     if (action == 1) {
       feedbackTone(300, NOTE_D8);
     }
@@ -154,7 +167,7 @@ void inputActionRF(String type, int action = 1) {
       feedbackTone(500, NOTE_D6);
     }
   }
-  if (type == "RF_D3") {
+  if (type == 4) {
     if (action == 1) {
       feedbackTone(300, NOTE_E4);
     }
@@ -172,9 +185,10 @@ void inputActionRF(String type, int action = 1) {
 }
 
 void inputCheckRF() {
-  RF_VT_STATE = digitalRead(RF_VT_PIN);
-
   if (RF_VT_STATE == 1) {
+    //RESET STATE
+    RF_VT_STATE = 0;
+    // READ STATE BOTTON
     RF_D0_STATE = digitalRead(RF_D0_PIN);
     RF_D1_STATE = digitalRead(RF_D1_PIN);
     RF_D2_STATE = digitalRead(RF_D2_PIN);
@@ -186,32 +200,32 @@ void inputCheckRF() {
     if (RF_D0_STATE == 1) {
       Serial.print("RF_D0_STATE : ");
       Serial.println(RF_D0_STATE);
-      inputRegulatorRF("RF_D0", NOTE_B7);
+      inputRegulatorRF(1, NOTE_B7);
     }
 
     if (RF_D1_STATE == 1) {
       Serial.print("RF_D1_STATE : ");
       Serial.println(RF_D1_STATE);
-      inputRegulatorRF("RF_D1", NOTE_C7);
+      inputRegulatorRF(2, NOTE_C7);
     }
 
     if (RF_D2_STATE == 1) {
       Serial.print("RF_D2_STATE : ");
       Serial.println(RF_D2_STATE);
-      inputRegulatorRF("RF_D2", NOTE_D7);
+      inputRegulatorRF(3, NOTE_D7);
     }
 
     if (RF_D3_STATE == 1) {
       Serial.print("RF_D3_STATE : ");
       Serial.println(RF_D3_STATE);
-      inputRegulatorRF("RF_D3", NOTE_E7);
+      inputRegulatorRF(4, NOTE_E7);
     }
   }
 }
 
 void inputResetRF() {
   RF_CLICK = 0;
-  RF_CLICK_TYPE = "";
+  RF_CLICK_TYPE = 0;
   RF_CLICK_TIMESTART = 0;
   RF_CLICK_TIMELIMIT = 0;
 }
