@@ -7,6 +7,9 @@ Flash project to ESP32 Development Board with Arduino IDE
 - ESP32 Develpment Board
 - Remote Control Wireless RF 4 Channel Receiver 2262 2272
 - Active Buzzer
+- Jumper Wire
+- LED
+- Resistor 220
 ## Features
 ### Bluetooth
 - Serial Command : Ready to command by smartphone
