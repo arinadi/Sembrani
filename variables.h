@@ -30,6 +30,6 @@ bool RF_D3_STATE = 0;
 
 short int RF_CLICK = 0;
 short int RF_CLICK_TYPE = 0;
-const int RF_CLICK_TIMER = 2 * 1000; // s
+const int RF_CLICK_TIMER = 1 * 1000; // s
 unsigned long RF_CLICK_TIMESTART = 0;
 unsigned long RF_CLICK_TIMELIMIT = 0;

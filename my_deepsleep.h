@@ -16,7 +16,7 @@ void printWakeupReason() {
     case 5  : Serial.println("Wakeup caused by ULP program"); break;
     default : Serial.println("Wakeup was not caused by deep sleep"); break;
   }
-  feedbackTone(100, NOTE_G6);
+  feedbackTone(500, NOTE_G6);
 }
 
 void initDeepSleepWakeUp() {
