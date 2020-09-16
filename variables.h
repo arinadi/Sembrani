@@ -1,3 +1,6 @@
+//Buzzer Tone
+#include "pitches.h" // NOTE to INT
+
 //Deep Sleep
 const int KEEP_ALIVE_TIMER = 15 * (1000 * 60); // minutes
 unsigned long KEEP_ALIVE_TIMENOW = 0;
@@ -27,6 +30,6 @@ bool RF_D3_STATE = 0;
 
 short int RF_CLICK = 0;
 short int RF_CLICK_TYPE = 0;
-const int RF_CLICK_TIMER = 1000; // ms
+const int RF_CLICK_TIMER = 2 * 1000; // s
 unsigned long RF_CLICK_TIMESTART = 0;
 unsigned long RF_CLICK_TIMELIMIT = 0;
