@@ -1,18 +1,4 @@
 // RF Remote
-// Interrupts
-void IRAM_ATTR isr() {
-  RF_VT_STATE = 1;
-}
-void initRF() {
-  pinMode(RF_VT_PIN, INPUT);
-  attachInterrupt(RF_VT_PIN, isr, RISING); //Interrupts
-
-  pinMode(RF_D0_PIN, INPUT);
-  pinMode(RF_D1_PIN, INPUT);
-  pinMode(RF_D2_PIN, INPUT);
-  pinMode(RF_D3_PIN, INPUT);
-}
-
 void inputRegulatorRF(int type, int fbTone = NOTE_A6) {
   if (RF_CLICK == 0 && RF_CLICK_TYPE == 0) { // Single click
     RF_CLICK_TIMESTART = millis();
@@ -112,9 +98,6 @@ void inputCheckRF() {
     RF_D2_STATE = digitalRead(RF_D2_PIN);
     RF_D3_STATE = digitalRead(RF_D3_PIN);
 
-    Serial.print("RF_VT_STATE : ");
-    Serial.println(RF_VT_STATE);
-
     if (RF_D0_STATE == 1) {
       Serial.print("RF_D0_STATE : ");
       Serial.println(RF_D0_STATE);
@@ -147,6 +130,7 @@ void inputResetRF() {
   RF_CLICK_TIMESTART = 0;
   RF_CLICK_TIMELIMIT = 0;
 }
+
 void ActionRF() {
   if (RF_CLICK > 0 && millis() > RF_CLICK_TIMELIMIT) {
     unsigned long KEEP_ALIVE_LASTACTION = millis();
@@ -156,4 +140,20 @@ void ActionRF() {
     // RESET INPUT
     inputResetRF();
   }
+}
+
+// Interrupts
+void IRAM_ATTR signalRF() {
+  Serial.println("Interrupts RF_VT_PIN");
+  RF_VT_STATE = 1;
+}
+
+void initRF() {
+  pinMode(RF_VT_PIN, INPUT);
+  attachInterrupt(digitalPinToInterrupt(RF_VT_PIN), signalRF, RISING); //Interrupts
+
+  pinMode(RF_D0_PIN, INPUT);
+  pinMode(RF_D1_PIN, INPUT);
+  pinMode(RF_D2_PIN, INPUT);
+  pinMode(RF_D3_PIN, INPUT);
 }
