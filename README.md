@@ -10,6 +10,8 @@ Flash project to ESP32 Development Board with Arduino IDE
 - Jumper Wire
 - LED
 - Resistor 220
+## Schematic
+![alt text](https://github.com/arinadi/sembrani/blob/master/Schematic/Sembrani.png?raw=true)
 ## Features
 ### Bluetooth
 - Serial Command : Ready to command by smartphone
